@@ -14,47 +14,56 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import { AnimatePresence } from "motion/react";
-import { Routes, Route, useLocation, Navigate } from "react-router";
+// import { AnimatePresence } from "motion/react";
+import { Routes, Route, HashRouter } from "react-router-dom";
 
 import { Home, VehicleManagement } from "@/pages";
-import type { PageProps, User } from "@/types";
+import type {  User } from "@/types";
 import { getDisplayNameFromJWT, getEmailFromJWT } from "./utils/utils";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getToken } from "./components/microapp-bridge";
 
-function AnimatedRoutes({ user }: PageProps) {
-  const location = useLocation();
+// function AnimatedRoutes({ user }: PageProps) {
+//   const location = useLocation();
 
-  return (
-    <AnimatePresence mode="wait" initial={false}>
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<Home user={user} />} />
-        <Route path="/services/vehicles" element={<VehicleManagement />} />
+//   return (
+//     <AnimatePresence mode="wait" initial={false}>
+//       <Routes location={location} key={location.pathname}>
+//         <Route path="/" element={<Home user={user} />} />
+//         <Route path="/services/vehicles" element={<VehicleManagement />} />
 
-        {/* Catch-all route: Redirect unknown routes to home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </AnimatePresence>
-  );
-}
+//         {/* Catch-all route: Redirect unknown routes to home */}
+//         <Route path="*" element={<Navigate to="/" replace />} />
+//       </Routes>
+//     </AnimatePresence>
+//   );
+// }
 
 function App() {
   const [user, setUser] = useState<User | undefined>(undefined);
-  // getToken((token: string | undefined) => {
-  //   if (token) {
-  //     setUser({
-  //       name: getDisplayNameFromJWT(token) ?? "",
-  //       email: getEmailFromJWT(token) ?? "",
-  //     });
-  //   }
-  // });
+  getToken((token: string | undefined) => {
+    if (token) {
+      setUser({
+        name: getDisplayNameFromJWT(token) ?? "",
+        email: getEmailFromJWT(token) ?? "",
+      });
+    }
+  });
 
-  useEffect(() => {
-    setUser({ name: "Lithika Dasanayaka", email: "lithika@wso2.com" });
-  }, []);
+  return (
+    <HashRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={<Home user={user} />}
+        />
+        <Route path="/services/vehicles" element={<VehicleManagement />} />
 
-  return <AnimatedRoutes user={user} />;
+        {/* Catch-all route: Redirect unknown routes to home */}
+        {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
+      </Routes>
+    </HashRouter>
+  );
 }
 
 export default App;

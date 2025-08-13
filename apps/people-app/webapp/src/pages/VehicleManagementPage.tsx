@@ -17,10 +17,10 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 import { AddSharp, KeyboardBackspaceSharp } from "@mui/icons-material";
-import { CircularProgress, IconButton } from "@mui/material";
+import {  IconButton } from "@mui/material";
 
 import type { Vehicle } from "@/types";
 import { PageTransitionWrapper } from "@/components/shared";
@@ -42,7 +42,7 @@ function VehicleManagementPage() {
   const [selected, setSelected] = useState<number | undefined>(undefined);
   const [rows, setRows] = useState<Vehicle[]>([]);
 
-  const { data, isPending, refetch } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["vehicles"],
     queryFn: fetchVehicles,
   });
@@ -75,12 +75,7 @@ function VehicleManagementPage() {
           <BackButton />
         </section>
         <div className="flex flex-col-reverse px-4 mt-5">
-          {isPending ? (
-            <div className="grid place-items-center size-full border-b border-[#E5E5E5] pb-12">
-              <CircularProgress size={33} sx={{ color: "#E66801" }} />
-            </div>
-          ) : (
-            <>
+        <>
               {rows.length > 0 ? (
                 <VehicleGroup
                   selected={selected}
@@ -103,7 +98,6 @@ function VehicleManagementPage() {
                 <EmptyState />
               )}
             </>
-          )}
         </div>
         <section className="flex justify-end mt-5 pr-1 mx-5">
           <AddButton
